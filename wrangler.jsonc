@@ -1,0 +1,40 @@
+{
+  "name": "jhon2",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-08-15",
+  "compatibility_flags": ["nodejs_compat", "global_fetch"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "d1_databases": [
+    {
+      "binding": "jhon_payload_staging",
+      "database_name": "jhon-payload-staging",
+      "database_id": "f796942e-f276-4d3e-aa77-922db52099ba",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "jhon2",
+    },
+  ],
+  // You can add staging environment configuration here:
+  // "env": {
+  //   "staging": {
+  //     "d1_databases": [
+  //       {
+  //         "binding": "D1",
+  //         "database_id": "your-staging-database-id"
+  //       }
+  //     ],
+  //     "r2_buckets": [
+  //       {
+  //         "binding": "R2",
+  //         "bucket_name": "jhon2-staging"
+  //       }
+  //     ]
+  //   }
+  // }
+}

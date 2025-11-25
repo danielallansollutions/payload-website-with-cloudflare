@@ -6,6 +6,11 @@ node_modules
 .next
 .vercel
 
+# Cloudflare
+.open-next
+.wrangler
+wrangler.toml
+
 # Payload default media upload directory
 public/media/
 

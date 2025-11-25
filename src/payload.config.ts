@@ -1,5 +1,7 @@
 // storage-adapter-import-placeholder
-import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
+import { r2Storage } from '@payloadcms/storage-r2'
+import { getCloudflareContext, type CloudflareContext } from '@opennextjs/cloudflare'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -19,6 +21,25 @@ import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Helper function to get Cloudflare context from Wrangler for local development
+async function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
+  // Using string replacement to avoid webpack parsing issues
+  const wranglerModule = '__wrangler'.replaceAll('_', '')
+  const { getPlatformProxy } = await import(/* webpackIgnore: true */ wranglerModule)
+  return getPlatformProxy({
+    environment: process.env.CLOUDFLARE_ENV,
+  })
+}
+
+// Determine if we should use remote Cloudflare bindings
+const cloudflareRemoteBindings = process.env.NODE_ENV === 'production'
+
+// Get the appropriate Cloudflare context based on environment
+const cloudflare =
+  process.argv.find((value) => value.match(/^(generate|migrate):?/)) || !cloudflareRemoteBindings
+    ? await getCloudflareContextFromWrangler()
+    : await getCloudflareContext({ async: true })
 
 export default buildConfig({
   admin: {
@@ -59,17 +80,20 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URI || '',
-    },
+  db: sqliteD1Adapter({
+    binding: cloudflare.env.jhon_payload_staging,
   }),
   collections: [Pages, Posts, Media, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
     ...plugins,
-    // storage-adapter-placeholder
+    r2Storage({
+      collections: {
+        media: true,
+      },
+      bucket: cloudflare.env.R2,
+    }),
   ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
