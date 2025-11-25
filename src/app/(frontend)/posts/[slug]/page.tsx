@@ -15,25 +15,29 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const posts = await payload.find({
-    collection: 'posts',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
+// Force dynamic rendering for Cloudflare D1 compatibility
+export const dynamic = 'force-dynamic'
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
-  })
+// Disabled for Cloudflare D1 - static generation requires database access at build time
+// export async function generateStaticParams() {
+//   const payload = await getPayload({ config: configPromise })
+//   const posts = await payload.find({
+//     collection: 'posts',
+//     draft: false,
+//     limit: 1000,
+//     overrideAccess: false,
+//     pagination: false,
+//     select: {
+//       slug: true,
+//     },
+//   })
 
-  return params
-}
+//   const params = posts.docs.map(({ slug }) => {
+//     return { slug }
+//   })
+
+//   return params
+// }
 
 type Args = {
   params: Promise<{
