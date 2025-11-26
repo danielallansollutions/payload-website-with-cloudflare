@@ -5,10 +5,10 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "postbuild": "open-next build && next-sitemap --config next-sitemap.config.cjs",
+    "build": "cross-env NODE_OPTIONS=--no-deprecation next build && next-sitemap --config next-sitemap.config.cjs",
+    "build:cloudflare": "cross-env NODE_OPTIONS=--no-deprecation next build && open-next build && next-sitemap --config next-sitemap.config.cjs",
     "cf-typegen": "wrangler types",
-    "deploy": "cross-env NODE_OPTIONS=--no-deprecation payload migrate && pnpm run build && wrangler deploy",
+    "deploy": "cross-env NODE_OPTIONS=--no-deprecation payload migrate && pnpm run build:cloudflare && wrangler deploy",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",

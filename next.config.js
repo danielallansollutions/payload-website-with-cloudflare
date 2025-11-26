@@ -32,6 +32,18 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  // Optimize for faster builds on Cloudflare
+  experimental: {
+    optimizePackageImports: ['@payloadcms/ui', '@payloadcms/richtext-lexical'],
+    // Reduce time spent on file tracing
+    outputFileTracingIncludes: {
+      '/': ['./public/**/*'],
+    },
+  },
+  // Disable static optimization for all pages (already using force-dynamic)
+  output: 'standalone',
+  // Speed up builds by reducing what gets traced
+  outputFileTracing: true,
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
